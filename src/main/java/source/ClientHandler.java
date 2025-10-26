@@ -1,5 +1,7 @@
 package source;
 
+import org.json.JSONObject;
+
 import java.io.*;
 import java.net.*;
 
@@ -20,13 +22,17 @@ public class ClientHandler implements Runnable {
             in = new DataInputStream(clientSocket.getInputStream());
             out = new DataOutputStream(clientSocket.getOutputStream());
 
+            String initial = ReadChat.getChat().toString();
+            out.writeUTF(initial);
+            out.flush();
+
             String message;
             while (true) {
                 message = in.readUTF();
                 System.out.println("Nachricht von " + clientSocket.getInetAddress() + ": " + message);
 
                 //schreiben zentral im server für synchronisation
-                server.addMessageToFile(message);
+                ReadChat.addMsg(message);
                 server.notifyMsg();
             }
 

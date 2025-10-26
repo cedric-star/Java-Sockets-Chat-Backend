@@ -51,31 +51,7 @@ public class MyServer {
     }
 
     public void notifyMsg() {
-        broadcastToAll(readChat());
+        broadcastToAll(ReadChat.getChat().toString());
     }
 
-    private String readChat() {
-        String s = null;
-        try {
-            Path path = Paths.get("mydata");
-            if (!Files.exists(path)) return "Chat ist leer";
-            byte[] fileBytes = Files.readAllBytes(path);
-            s = new String(fileBytes, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            System.err.println("Fehler beim Lesen der Chat-Datei: " + e.getMessage());
-            s = "Fehler beim Laden des Chats";
-        }
-        return s;
-    }
-
-    public synchronized void addMessageToFile(String msg) {
-        try {
-            Path path = Paths.get(chatFileName);
-            String toAppend = msg + System.lineSeparator();// \n für unix; \r\n für windows
-            Files.writeString(path, toAppend, StandardOpenOption.APPEND);
-
-        } catch (IOException e) {
-            System.err.println("Fehler beim Schreiben in Chat-Datei: " + e.getMessage());
-        }
-    }
 }
