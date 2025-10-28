@@ -53,5 +53,4 @@ public class MyServer {
     public void notifyMsg() {
         broadcastToAll(ReadChat.getChat().toString());
     }
-
 }
