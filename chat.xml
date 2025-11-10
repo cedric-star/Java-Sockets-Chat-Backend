@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<messages>
+  <message>
+    <user>cedric</user>
+    <timestamp>2024-01-15T14:31:15</timestamp>
+    <msg>hallo welt</msg>
+  </message>
+  <message>
+    <user>foo</user>
+    <timestamp>2024-01-15T14:31:15</timestamp>
+    <msg>hallo welt 2</msg>
+  </message>
+  <message>
+    <user>obama</user>
+    <timestamp>2025-11-10T09:09:00.402449378Z</timestamp>
+    <msg>test</msg>
+  </message>
+</messages>
