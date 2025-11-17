@@ -11,10 +11,13 @@ public class MyServer {
 
     public MyServer() {
         this.chatFileName = "mydata";
-
     }
 
     public void start(int port) {
+        System.out.println("Server Starten...");
+        System.out.println("HTML generieren...");
+        ReadChat.genHTML();
+
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -33,9 +36,10 @@ public class MyServer {
             allClients.add(clientHandler);
             new Thread(clientHandler).start();
         }
+
     }
 
-    public void broadcastToAll(String message) {
+    public void broadcast(String message) {
         if (allClients.isEmpty()) {
             System.err.println("kein clients gestartet");
         } else {
@@ -46,6 +50,6 @@ public class MyServer {
     }
 
     public void notifyMsg() {
-        broadcastToAll(ReadChat.getChat().toString());
+        broadcast(ReadChat.getChat().toString());
     }
 }

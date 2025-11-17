@@ -12,6 +12,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +26,9 @@ import java.nio.file.Paths;
 
 public class ReadChat {
     private static final String jsonFile = "chat.json";
+    private static final String xmlFile = "chat.xml";
+    private static final String xsltFile = "stylesheet.xslt";
+    private static final String htmlFile = "out.html";
 
     public static synchronized JSONArray getChat() {
         String s = null;
@@ -38,11 +46,11 @@ public class ReadChat {
 
     private static void write2XML(String msg, String usr, String ts) {
         try {
-            File xmlFile = new File("chat.xml");
+            File xmlF = new File(xmlFile);
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(xmlFile);
+            Document document = builder.parse(xmlF);
 
             Node root = document.getElementsByTagName("messages").item(0);
             Node elem = document.createElement("message");
@@ -83,7 +91,37 @@ public class ReadChat {
         }
     }
 
+    private static void printWithXPath() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(xmlFile);
+
+            XPathFactory xpathfactory = XPathFactory.newInstance();
+            XPath xpath = xpathfactory.newXPath();
+
+            // User-Elemente statt Text
+            XPathExpression expr = xpath.compile("/messages/message/user");
+
+            Object result = expr.evaluate(doc, XPathConstants.NODESET);
+            NodeList nodes = (NodeList) result;
+
+            System.out.println("=== user ===");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node userNode = nodes.item(i);
+                System.out.println("user: " + userNode.getTextContent());
+                //System.out.println("node name: " + userNode.getNodeName());
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
     public static synchronized void addMsg(String message) {
+        System.out.println("\n");
+        printWithXPath();
+        System.out.println("\n\n");
         JSONObject obj = new JSONObject(message);
         String ts = java.time.Instant.now().toString();
         obj.put("timestamp", ts);
@@ -103,4 +141,19 @@ public class ReadChat {
         }
     }
 
+    public static void genHTML() {
+        Source srcXML = new StreamSource(xmlFile);
+        Source srcXSLT = new StreamSource(xsltFile);
+
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer t = tf.newTransformer(srcXSLT);
+
+            StreamResult res = new StreamResult(htmlFile);
+            t.transform(srcXML, res);
+            System.out.println("Completed XSLT transofmation");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }
