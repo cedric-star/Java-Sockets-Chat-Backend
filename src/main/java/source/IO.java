@@ -29,24 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class IO {
-    private static final String jsonFile = "chat.json";
     private static final String xmlFile = "chat.xml";
     private static final String xsltFile = "stylesheet.xslt";
     private static final String htmlFile = "out.html";
 
-    public static synchronized JSONArray getChat() {
-        String s = null;
-        try {
-            Path path = Paths.get(jsonFile);
-            byte[] fileBytes = Files.readAllBytes(path);
-            s = new String(fileBytes, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            System.err.println("Fehler beim Lesen der Chat-Datei: " + e.getMessage());
-            s = "Fehler beim Laden des Chats";
-        }
 
-        return new JSONArray(s);
-    }
 
     private static void write2XML(String msg, String usr, String ts) {
         try {
