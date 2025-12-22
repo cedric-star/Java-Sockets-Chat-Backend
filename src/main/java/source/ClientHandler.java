@@ -103,6 +103,7 @@ public class ClientHandler implements Runnable {
         out.writeInt(filenum);
 
         for (File file : files) sendFile(file, out);
+        out.flush();
     }
 
     private void sendFile(File file, DataOutputStream out) throws IOException {

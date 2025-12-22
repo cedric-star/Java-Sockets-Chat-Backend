@@ -170,8 +170,6 @@ public class IO {
 
         File[] files = userDir.listFiles();
         return new ArrayList<File>(Arrays.asList(files));
-
-        return 0;
     }
 
 
