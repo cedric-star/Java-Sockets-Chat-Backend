@@ -1,7 +1,10 @@
 package source;
 
+import protocol.Commands;
+
 import java.io.*;
 import java.net.*;
+import java.nio.file.Files;
 
 public class ClientHandler implements Runnable {
     private DataInputStream in;
@@ -20,22 +23,40 @@ public class ClientHandler implements Runnable {
             in = new DataInputStream(clientSocket.getInputStream());
             out = new DataOutputStream(clientSocket.getOutputStream());
 
-            String initial = ReadChat.getChat().toString();
-            out.writeUTF(initial);
+            //String initial = ReadXML.getChat().toString();
+            //out.writeUTF(initial);
             out.flush();
 
-            String message;
-            while (true) {
-                message = in.readUTF();
-                System.out.println("Nachricht von " + clientSocket.getInetAddress() + ": " + message);
 
-                //schreiben zentral im server für synchronisation
-                ReadChat.addMsg(message);
-                server.notifyMsg();
+            while (true) {
+                System.out.println("Nachricht:");
+
+                String user = in.readUTF();
+                System.out.println("    userid: "+user);
+                createFolder(user);
+
+                String filename = in.readUTF();
+                System.out.println("    filename: "+filename);
+
+                long len = in.readLong();
+                System.out.println("    filelen: "+len);
+
+                byte[] content = in.readNBytes(Math.toIntExact(len));
+
+                String savedir = "/users/"+user;
+                File file = new File(savedir, filename);
+
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    fos.write(content);
+                }
+                System.out.println("    file saved as: "+file.getPath());
+
+                //sende kompletten shit zurück
+
             }
 
         } catch (Exception e) {
-            System.out.println("Verbindung zu " + clientSocket.getInetAddress() + " getrennt: " + e.getMessage());
+            System.out.println("Connectio zu " + clientSocket.getInetAddress() + " getrennt: " + e.getMessage());
         } finally {
             // Client aus Liste entfernen
             try {
@@ -46,6 +67,10 @@ public class ClientHandler implements Runnable {
                 System.err.println(e.getMessage());
             }
         }
+    }
+
+    public void createFolder(String user) {
+        //Files.exists()
     }
 
     public void sendMessage(String msg) {

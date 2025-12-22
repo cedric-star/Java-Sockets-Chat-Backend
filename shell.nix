@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+ pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
   name = "java-dev-shell";
@@ -21,11 +21,8 @@ pkgs.mkShell {
     pango
   ];
 
-  shellHook = ''
     export JAVA_HOME=${pkgs.jdk21}
-    export PATH=$JAVA_HOME/bin:$PATH
-    echo "Java dev shell ready — using $JAVA_HOME"
-    echo "starting idea-community..."
+    echo "starting idea-cofkdsjfmunity..."
     idea-community .
   '';
 }

@@ -15,8 +15,6 @@ public class MyServer {
 
     public void start(int port) {
         System.out.println("Server Starten...");
-        System.out.println("HTML generieren...");
-        ReadChat.genHTML();
 
         try {
             serverSocket = new ServerSocket(port);
@@ -37,19 +35,5 @@ public class MyServer {
             new Thread(clientHandler).start();
         }
 
-    }
-
-    public void broadcast(String message) {
-        if (allClients.isEmpty()) {
-            System.err.println("kein clients gestartet");
-        } else {
-            for (ClientHandler client : allClients) {
-                client.sendMessage(message);
-            }
-        }
-    }
-
-    public void notifyMsg() {
-        broadcast(ReadChat.getChat().toString());
     }
 }

@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ReadChat {
+public class ReadXML {
     private static final String jsonFile = "chat.json";
     private static final String xmlFile = "chat.xml";
     private static final String xsltFile = "stylesheet.xslt";
@@ -118,7 +118,7 @@ public class ReadChat {
         }
     }
 
-    public static synchronized void addMsg(String message) {
+    public static synchronized void gotMSG(String message) {
         System.out.println("\n");
         printWithXPath();
         System.out.println("\n\n");
