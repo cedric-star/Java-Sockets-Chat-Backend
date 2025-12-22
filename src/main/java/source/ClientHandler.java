@@ -5,6 +5,8 @@ import protocol.Commands;
 import java.io.*;
 import java.net.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
     private DataInputStream in;
@@ -22,41 +24,35 @@ public class ClientHandler implements Runnable {
         try {
             in = new DataInputStream(clientSocket.getInputStream());
             out = new DataOutputStream(clientSocket.getOutputStream());
-
-            //String initial = ReadXML.getChat().toString();
-            //out.writeUTF(initial);
             out.flush();
 
 
             while (true) {
-                System.out.println("Nachricht:");
+                System.out.println("\nNachricht:");
 
-                String user = in.readUTF();
-                System.out.println("    userid: "+user);
-                createFolder(user);
+                byte cmd = in.readByte();
 
-                String filename = in.readUTF();
-                System.out.println("    filename: "+filename);
+                switch (cmd) {
+                    case Commands.updateFile:
+                        updateFile(in);
+                        break;
+                    case Commands.deleteFile:
+                        deleteFile(in);
+                        break;
+                    case Commands.syncAll:
+                        syncAll(in, out);
+                        break;
 
-                long len = in.readLong();
-                System.out.println("    filelen: "+len);
 
-                byte[] content = in.readNBytes(Math.toIntExact(len));
-
-                String savedir = "/users/"+user;
-                File file = new File(savedir, filename);
-
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    fos.write(content);
                 }
-                System.out.println("    file saved as: "+file.getPath());
+
 
                 //sende kompletten shit zurück
 
             }
 
         } catch (Exception e) {
-            System.out.println("Connectio zu " + clientSocket.getInetAddress() + " getrennt: " + e.getMessage());
+            System.out.println("Connection to" + clientSocket.getInetAddress() + " removed: " + e.getMessage());
         } finally {
             // Client aus Liste entfernen
             try {
@@ -69,16 +65,52 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void createFolder(String user) {
-        //Files.exists()
+    private void updateFile(DataInputStream in) throws IOException{
+        System.out.println("    updating file...");
+        String user = in.readUTF();
+        System.out.println("    userid: "+user);
+
+        String filename = in.readUTF();
+        System.out.println("    filename: "+filename);
+
+        long len = in.readLong();
+        System.out.println("    filelen: "+len);
+
+        byte[] content = in.readNBytes(Math.toIntExact(len));
+
+
+        IO.saveFile(user, filename, content);
     }
 
-    public void sendMessage(String msg) {
-        try {
-            out.writeUTF(msg);
-            out.flush();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
+    private void deleteFile(DataInputStream in) throws IOException{
+        System.out.println("    deleting file...");
+        String user = in.readUTF();
+        System.out.println("    userid: "+user);
+
+        String filename = in.readUTF();
+        System.out.println("    filename: "+filename);
+
+        IO.deleteFile(user, filename);
     }
+
+    private void syncAll(DataInputStream in, DataOutputStream out) throws IOException{
+        System.out.println("    synching...");
+        String user = in.readUTF();
+        System.out.println("    userid: "+user);
+
+        ArrayList<File> files = IO.sendAllFiles(user);
+        int filenum = files.size();
+        out.writeInt(filenum);
+
+        for (File file : files) sendFile(file, out);
+    }
+
+    private void sendFile(File file, DataOutputStream out) throws IOException {
+        out.writeUTF(file.getName());
+        out.writeLong(file.length());
+        out.write(Files.readAllBytes(file.toPath()));
+    }
+
+
+
 }

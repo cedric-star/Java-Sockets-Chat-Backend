@@ -18,13 +18,17 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-public class ReadXML {
+public class IO {
     private static final String jsonFile = "chat.json";
     private static final String xmlFile = "chat.xml";
     private static final String xsltFile = "stylesheet.xslt";
@@ -118,28 +122,58 @@ public class ReadXML {
         }
     }
 
-    public static synchronized void gotMSG(String message) {
-        System.out.println("\n");
-        printWithXPath();
-        System.out.println("\n\n");
-        JSONObject obj = new JSONObject(message);
-        String ts = java.time.Instant.now().toString();
-        obj.put("timestamp", ts);
+    public static synchronized void saveFile(String user, String filename, byte[] content) {
+        System.out.println("\nSaving File: "+filename);
 
-        write2XML(obj.getString("msg"), obj.getString("user"), ts);
+        File baseDir = new File("java_xml_mp3_user_data");
+        if (!baseDir.exists()) baseDir.mkdirs();
 
-        JSONArray arr;
+        File userDir = new File(baseDir, user);
+        if (!userDir.exists()) userDir.mkdirs();
+
+        File file = new File(userDir, filename);
+
         try {
-            String content = Files.readString(Paths.get("chat.json"));
-            arr = new JSONArray(content);
-            arr.put(obj);
-
-            Files.writeString(Paths.get("chat.json"), arr.toString());
-
-        } catch (IOException e) {
-            System.err.println("Fehler beim Schreiben in Chat-Datei: " + e.getMessage());
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(content);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+        System.out.println("File saved: "+file.getAbsolutePath());
     }
+
+    public static synchronized void deleteFile(String user, String filename) {
+        System.out.println("\nDeleting File: "+filename);
+
+        File baseDir = new File("java_xml_mp3_user_data");
+        if (!baseDir.exists()) baseDir.mkdirs();
+
+        File userDir = new File(baseDir, user);
+        if (!userDir.exists()) userDir.mkdirs();
+
+        File fileDir = new File(userDir, filename);
+
+        try {
+            if (fileDir.exists()) fileDir.delete();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        System.out.println("File deleted? "+(!fileDir.exists()));
+    }
+
+    public static synchronized ArrayList<File> sendAllFiles(String user) {
+        File baseDir = new File("java_xml_mp3_user_data");
+        if (!baseDir.exists()) baseDir.mkdirs();
+
+        File userDir = new File(baseDir, user);
+        if (!userDir.exists()) userDir.mkdirs();
+
+        File[] files = userDir.listFiles();
+        return new ArrayList<File>(Arrays.asList(files));
+
+        return 0;
+    }
+
 
     public static void genHTML() {
         Source srcXML = new StreamSource(xmlFile);
