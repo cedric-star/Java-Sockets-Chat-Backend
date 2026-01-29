@@ -111,7 +111,4 @@ public class ClientHandler implements Runnable {
         out.writeLong(file.length());
         out.write(Files.readAllBytes(file.toPath()));
     }
-
-
-
 }

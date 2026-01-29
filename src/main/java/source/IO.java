@@ -24,18 +24,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class IO {
-    private static final String xmlFile = "chat.xml";
-    private static final String xsltFile = "stylesheet.xslt";
-    private static final String htmlFile = "out.html";
 
-
-
-    private static void write2XML(String msg, String usr, String ts) {
+    /*private static void write2XML(String msg, String usr, String ts) {
         try {
             File xmlF = new File(xmlFile);
 
@@ -80,9 +76,9 @@ public class IO {
         } catch (TransformerException e) {
             System.err.println(e.getMessage());
         }
-    }
+    }*/
 
-    private static void printWithXPath() {
+    /*private static void printWithXPath() {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -107,7 +103,7 @@ public class IO {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-    }
+    }*/
 
     public static synchronized void saveFile(String user, String filename, byte[] content) {
         System.out.println("\nSaving File: "+filename);
@@ -127,6 +123,8 @@ public class IO {
             System.err.println(e.getMessage());
         }
         System.out.println("File saved: "+file.getAbsolutePath());
+
+        genHTML(user);
     }
 
     public static synchronized void deleteFile(String user, String filename) {
@@ -146,6 +144,8 @@ public class IO {
             System.err.println(e.getMessage());
         }
         System.out.println("File deleted? "+(!fileDir.exists()));
+
+        genHTML(user);
     }
 
     public static synchronized ArrayList<File> sendAllFiles(String user) {
@@ -156,26 +156,43 @@ public class IO {
         if (!userDir.exists()) userDir.mkdirs();
 
         File[] files = userDir.listFiles();
+
+        genHTML(user);
         return new ArrayList<File>(Arrays.asList(files));
     }
 
+    public static void genHTML(String user) {
+        File baseDir = new File("java_xml_mp3_user_data");
+        if (!baseDir.exists()) baseDir.mkdirs();
 
-    public static void genHTML() {
-        Source srcXML = new StreamSource(xmlFile);
-        Source srcXSLT = new StreamSource(xsltFile);
+        File userDir = new File(baseDir, user);
+        if (!userDir.exists()) userDir.mkdirs();
+
+        File xml = new File(userDir, user+"_music.xml");
+        File xslt = new File(userDir, user+"_style.xslt");
+        File html = new File(userDir, user+"_index.html");
+
+        if (!xml.exists()) return;
+        if (!xslt.exists()) {
+            try {
+                Files.copy(new File("stylesheet.xslt").toPath(), xslt.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+
+        }
+
+        Source srcXML = new StreamSource(xml);
+        Source srcXSLT = new StreamSource(xslt);
 
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer(srcXSLT);
 
-            StreamResult res = new StreamResult(htmlFile);
+            StreamResult res = new StreamResult(html);
             t.transform(srcXML, res);
-            System.out.println("Completed XSLT transofmation");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
-
-
-
 }
