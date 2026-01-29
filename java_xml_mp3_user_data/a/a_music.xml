@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<files user="a">
+    <mp3 filename="female_100_kmh.mp3">
+        <filename>female_100_kmh.mp3</filename>
+        <title>test</title>
+        <artist>no_artist</artist>
+        <album>no_album</album>
+        <genre>no_genre</genre>
+        <duration>34s</duration>
+    </mp3>
+</files>
