@@ -154,10 +154,10 @@ public class IO {
 
         File userDir = new File(baseDir, user);
         if (!userDir.exists()) userDir.mkdirs();
-
+        genHTML(user);
         File[] files = userDir.listFiles();
 
-        genHTML(user);
+
         return new ArrayList<File>(Arrays.asList(files));
     }
 
