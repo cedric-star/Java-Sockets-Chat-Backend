@@ -44,6 +44,7 @@
                         <tr>
                             <td><xsl:value-of select="title"/></td>
                             <td><xsl:value-of select="artist"/></td>
+                            <td><xsl:value-of select="album"/></td>
                             <td><xsl:value-of select="genre"/></td>
                             <td><xsl:value-of select="duration"/></td>
                         </tr>
