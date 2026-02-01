@@ -6,23 +6,23 @@
                 <title>MP3 List</title>
                 <style>
                     body {
-                    background-color: grey;
-                    color: blue;
+                    background-color: <xsl:value-of select="files/style/@backgroundColor"/>;
+                    color: <xsl:value-of select="files/style/@mainTextColor"/>;
 
                     font-family: verdana;
                     }
 
                     th {
-                    background-color: green;
-                    color: white;
+                    background-color: <xsl:value-of select="files/style/@tableHeadBackgroundColor"/>;
+                    color: <xsl:value-of select="files/style/@tableHeadTextColor"/>;
 
                     padding: 10px;
                     border: none;
                     }
 
                     td {
-                    background-color: white;
-                    color: black;
+                    background-color: <xsl:value-of select="files/style/@tableRowBackgroundColor"/>;
+                    color: <xsl:value-of select="files/style/@tableRowTextColor"/>;
 
                     padding: 10px;
                     border: none;
