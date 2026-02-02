@@ -7,12 +7,18 @@ import java.util.ArrayList;
 public class MyServer {
     private ServerSocket serverSocket;
     private static final ArrayList<ClientHandler> allClients = new ArrayList<>();
-    private final String chatFileName;
 
-    public MyServer() {
-        this.chatFileName = "mydata";
-    }
+    /**
+     * Neuer server
+     */
+    public MyServer() {}
 
+    /**
+     * Startet Server mit Port.
+     * In der While-Schleife wird auf neue Verbindungen gewartet, diese
+     * werden zu der allClients-Liste hinzugefügt.
+     * @param port
+     */
     public void start(int port) {
         System.out.println("Server Starten...");
 
@@ -34,6 +40,5 @@ public class MyServer {
             allClients.add(clientHandler);
             new Thread(clientHandler).start();
         }
-
     }
 }
