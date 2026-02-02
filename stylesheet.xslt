@@ -40,7 +40,7 @@
                 <table border="1">
                     <tr><th>Title</th><th>Artist</th><th>Album</th><th>Genre</th><th>Duration</th></tr>
                     <xsl:for-each select="files/mp3">
-                        <xsl:sort select="*[name() = /files/@sortby]" order="*[name() = /files/@sortorder]"/>
+                        <xsl:sort select="*[name() = /files/@sortby]" order="{/files/@sortorder}"/>
                         <tr>
                             <td><xsl:value-of select="title"/></td>
                             <td><xsl:value-of select="artist"/></td>
