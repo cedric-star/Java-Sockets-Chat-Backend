@@ -23,7 +23,7 @@ public class MyServer {
         }
         System.out.println("Server gestartet auf port: " + port);
 
-        while (true) {
+        while (!serverSocket.isClosed()) {
             Socket clientSocket = null;
             try {
                 clientSocket = serverSocket.accept();

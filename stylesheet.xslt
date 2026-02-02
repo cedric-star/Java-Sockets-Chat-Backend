@@ -38,7 +38,7 @@
                 <h1>MP3 Files for user <xsl:value-of select="files/@user"/></h1>
                 <h4>sorted by: <xsl:value-of select="files/@sortby"/>, in <xsl:value-of select="files/@sortorder"/> order</h4>
                 <table border="1">
-                    <tr><th>Title</th><th>Artist</th><th>Genre</th><th>Duration</th></tr>
+                    <tr><th>Title</th><th>Artist</th><th>Album</th><th>Genre</th><th>Duration</th></tr>
                     <xsl:for-each select="files/mp3">
                         <xsl:sort select="*[name() = /files/@sortby]" order="*[name() = /files/@sortorder]"/>
                         <tr>

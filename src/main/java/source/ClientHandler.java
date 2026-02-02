@@ -42,8 +42,6 @@ public class ClientHandler implements Runnable {
                     case Commands.syncAll:
                         syncAll(in, out);
                         break;
-
-
                 }
 
 
