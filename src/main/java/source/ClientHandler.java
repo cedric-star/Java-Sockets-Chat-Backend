@@ -12,6 +12,7 @@ public class ClientHandler implements Runnable {
     private DataOutputStream out;
     private final MyServer server;
     private final Socket clientSocket;
+    private IO io;
 
     /**
      * Verwaltet die Verbindung zwischen einem Client und dem Server.
@@ -22,6 +23,7 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket, MyServer server) {
         this.clientSocket = socket;
         this.server = server;
+        this.io = IO.getInstance();
     }
 
     /**
@@ -86,7 +88,7 @@ public class ClientHandler implements Runnable {
 
         byte[] content = in.readNBytes(Math.toIntExact(len));
 
-        IO.saveFile(user, filename, content);
+        io.saveFile(user, filename, content);
     }
 
     /**
@@ -102,7 +104,7 @@ public class ClientHandler implements Runnable {
         String filename = in.readUTF();
         System.out.println("    filename: "+filename);
 
-        IO.deleteFile(user, filename);
+        io.deleteFile(user, filename);
     }
 
     /**
@@ -117,7 +119,7 @@ public class ClientHandler implements Runnable {
         String user = in.readUTF();
         System.out.println("    userid: "+user);
 
-        ArrayList<File> files = IO.sendAllFiles(user);
+        ArrayList<File> files = io.sendAllFiles(user);
         int filenum = files.size();
         out.writeInt(filenum);
 

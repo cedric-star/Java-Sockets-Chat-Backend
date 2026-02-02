@@ -11,6 +11,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class IO {
+    private static IO INSTANCE;
+    private IO() {}
+
+    /**
+     * Diese Klasse ist als Singleton implementiert.
+     * @return
+     */
+    public static IO getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new IO();
+        }
+        return INSTANCE;
+    }
 
     /**
      * Sichert per Socket (als ByteStream) gesendete Dateien.
@@ -18,7 +31,7 @@ public class IO {
      * @param filename
      * @param content
      */
-    public static synchronized void saveFile(String user, String filename, byte[] content) {
+    public synchronized void saveFile(String user, String filename, byte[] content) {
         System.out.println("\nSaving File: "+filename);
 
         File baseDir = new File("java_xml_mp3_user_data");
@@ -45,7 +58,7 @@ public class IO {
      * @param user
      * @param filename
      */
-    public static synchronized void deleteFile(String user, String filename) {
+    public synchronized void deleteFile(String user, String filename) {
         System.out.println("\nDeleting File: "+filename);
 
         File baseDir = new File("java_xml_mp3_user_data");
@@ -71,7 +84,7 @@ public class IO {
      * @param user
      * @return
      */
-    public static synchronized ArrayList<File> sendAllFiles(String user) {
+    public synchronized ArrayList<File> sendAllFiles(String user) {
         File baseDir = new File("java_xml_mp3_user_data");
         if (!baseDir.exists()) baseDir.mkdirs();
 
@@ -84,11 +97,11 @@ public class IO {
     }
 
     /**
-     * Generierung der HTML passiert Serverseitig hier, dannach
+     * Generierung der HTML-Datei passiert Serverseitig hier, danach
      * sollten alle Dateien an den Nutzer geschickt werden (syncAll).
      * @param user
      */
-    public static void genHTML(String user) {
+    private synchronized void genHTML(String user) {
         File baseDir = new File("java_xml_mp3_user_data");
         if (!baseDir.exists()) baseDir.mkdirs();
 
