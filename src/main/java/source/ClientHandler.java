@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class ClientHandler implements Runnable {
     private DataInputStream in;
     private DataOutputStream out;
-    private final MyServer server;
     private final Socket clientSocket;
     private IO io;
 
@@ -18,11 +17,9 @@ public class ClientHandler implements Runnable {
      * Verwaltet die Verbindung zwischen einem Client und dem Server.
      * Liefert Methoden zum löschen, snchronisieren, ...
      * @param socket
-     * @param server
      */
-    public ClientHandler(Socket socket, MyServer server) {
+    public ClientHandler(Socket socket) {
         this.clientSocket = socket;
-        this.server = server;
         this.io = IO.getInstance();
     }
 
@@ -38,8 +35,6 @@ public class ClientHandler implements Runnable {
             out.flush();
 
             while (!clientSocket.isClosed()) {
-                System.out.println("\nNachricht:");
-
                 byte cmd = in.readByte();
 
                 switch (cmd) {

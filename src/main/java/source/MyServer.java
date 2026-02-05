@@ -36,7 +36,7 @@ public class MyServer {
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
-            ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+            ClientHandler clientHandler = new ClientHandler(clientSocket);
             allClients.add(clientHandler);
             new Thread(clientHandler).start();
         }
